@@ -2,8 +2,8 @@
 // To add props: [dealId, labels, props, data.forEach()]
 function getDeals(){
   let matrix = [];
-  let dealId, dealName, dealStage, pipeline, amount, channel, channel_child, hubspot_owner_id, referral_vc, closedate, createdAt, updatedAt, archived, tier;
-  let labels = ['dealId', 'dealName', 'dealStage', 'pipeline', 'amount', 'channel', 'channel_child', 'hubspot_owner_id','referral_vc', 'closedate', 'createdAt', 'updatedAt', 'archived', 'tier'];
+  let dealId, dealName, dealStage, pipeline, amount, channel, channel_child, hubspot_owner_id, referral_vc, closedate, createdAt, updatedAt, archived, tier, meeting_minutes_url, hs_analytics_source,hs_analytics_source_data_1,hs_analytics_source_data_2,missing_next_opportunity_date,closed_lost_reason,missing_reason,num_contacted_notes;
+  let labels = ['dealId', 'dealName', 'dealStage', 'pipeline', 'amount', 'channel', 'channel_child', 'hubspot_owner_id','referral_vc', 'closedate', 'createdAt', 'updatedAt', 'archived', 'tier', 'meeting_minutes_url', 'hs_analytics_source','hs_analytics_source_data_1','hs_analytics_source_data_2','missing_next_opportunity_date','closed_lost_reason','missing_reason','num_contacted_notes'];
   matrix.push(labels);
   let go = true;
   let hasMore = false;
@@ -11,7 +11,7 @@ function getDeals(){
   let counter = 0
 
   while (go){
-    let props = "channel,channel_child,referral_vc,dealname,dealstage,pipeline,amount,closedate,tier,hubspot_owner_id";
+    let props = "channel,channel_child,referral_vc,dealname,dealstage,pipeline,amount,closedate,tier,hubspot_owner_id,meeting_minutes_url,hs_analytics_source,hs_analytics_source_data_1,hs_analytics_source_data_2,missing_next_opportunity_date,closed_lost_reason,missing_reason,num_contacted_notes";
     let url = "https://api.hubapi.com/crm/v3/objects/deals?hapikey=" + HUBSPOT_API_KEY + "&properties=" + props;
     if (hasMore){
       url += "&after=" + after;
@@ -40,7 +40,15 @@ function getDeals(){
       updatedAt = item.updatedAt;
       archived = item.archived;
       tier = item.properties.tier;
-      matrix.push([dealId, dealName, dealStage, pipeline, amount, channel, channel_child, hubspot_owner_id, referral_vc, closedate, createdAt, updatedAt, archived, tier]);
+      meeting_minutes_url = item.properties.meeting_minutes_url;
+      hs_analytics_source = item.properties.hs_analytics_source;
+      hs_analytics_source_data_1 = item.properties.hs_analytics_source_data_1;
+      hs_analytics_source_data_2 = item.properties.hs_analytics_source_data_2;
+      missing_next_opportunity_date = item.properties.missing_next_opportunity_date;
+      closed_lost_reason = item.properties.closed_lost_reason;
+      missing_reason = item.properties.missing_reason;
+      num_contacted_notes = item.properties.num_contacted_notes;
+      matrix.push([dealId, dealName, dealStage, pipeline, amount, channel, channel_child, hubspot_owner_id, referral_vc, closedate, createdAt, updatedAt, archived, tier, meeting_minutes_url,hs_analytics_source,hs_analytics_source_data_1,hs_analytics_source_data_2,missing_next_opportunity_date,closed_lost_reason,missing_reason,num_contacted_notes]);
       Logger.log(item);
     });
     Logger.log("Current Page: %s", counter);
