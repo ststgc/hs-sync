@@ -37,7 +37,7 @@ function getEngagements(){
         companyIds = item['associations']['companyIds'];
         dealIds = item['associations']['dealIds'];
         ownerIds = item['associations']['ownerIds'];
-        type = = item['engagement']['type'];
+        type = item['engagement']['type'];
         matrix.push([id,createdAt,lastUpdated,contactIds,companyIds,dealIds,ownerIds,type]);
       })
    }
