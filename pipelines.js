@@ -28,7 +28,7 @@ function getPipelines(){
 function writePipelines(){
   try {
     let ss = SpreadsheetApp.getActiveSpreadsheet();
-    let sheetName = 'pipelines';
+    let sheetName = 'engagements';
     let sheet = ss.getSheetByName(sheetName);
     let data = getPipelines();
     let lastRowNum = data.length;

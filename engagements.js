@@ -1,64 +1,45 @@
+//サコ編集済2020/03/28
 // Get All Engagements
 function getEngagements(){
   let matrix = [];
-  // Add props to retrive from contacts.
-  let props = "lastname,firstname,company,email,phone,hs_analytics_source,is_partner,partner_reffered_by";
-  let id, firstName, lastName, company, email, phone, hs_analytics_source, isPartner, partner_reffered_by;
-  let labels = ['id', 'firstName', 'lastName', 'company', 'email', 'phone', 'hs_analytics_source', 'isPartner', 'partner_reffered_by'];
+  let id, contactIds,companyIds,dealIds,ownerIds,createdAt,lastUpdated;
+  let labels  = ['id','createdAt','lastUpdated','contactIds','companyIds','dealIds','ownerIds'];
   matrix.push(labels);  
   let go = true;
-  let hasMore = false;
-  let after;
   let counter = 1;
-  let timeLimit = 10000; // 10sec
-  let timeStarted = new Date(2008, 5, 1, 2, 0, 0);
-  let timeNow, timeDiff;
-  
+  let offset;
+  let hasMore;
   
   try {
     while (go){
-      let url = "https://api.hubapi.com/engagements/v1/engagements/paged?hapikey=" + HUBSPOT_API_KEY + "&properties=" + props;
-      if (counter = 100){
-        timeNow = new Date(2008, 5, 1, 2, 0, 0);
-        timeDiff = timeNow.getTime() - timeStarted.getTime();
-        if (timeLimit < timeDiff) {
-          Utilities.sleep(50);
-        }
-        counter = 1;
+      let url = "https://api.hubapi.com/engagements/v1/engagements/paged?hapikey=" + HUBSPOT_API_KEY +"&limit=250";
+      let key = "";
+      
+      if(counter =! 1){
+        key = "&offset=" + offset;
       }
-      if (hasMore){
-        url += "&after=" + after;
-      }
+      
+      url = url + key;
       let request = UrlFetchApp.fetch(url);
       let data = JSON.parse(request.getContentText());
       
-      hasMore = data.paging ? true : false;
-      if (hasMore){
-        after = data.paging.next.after;
-      }
-      if (!hasMore){
+      if (data['hasMore'] == true ){
+         offset = data.offset;
+      }else{
         go = false;
       }
       
-      // throw new Error();
-      
       data.results.forEach((item)=>{
-        Logger.log(item);
-        //id = item['id'];
-        //lastName = item['properties']['lastname'];
-        //firstName = item['properties']['firstname']; 
-        //company = item['properties']['company'];
-        //phone = item['properties']['phone'];
-        //partner_reffered_by = item['properties']['partner_reffered_by'];
-        //hs_analytics_source = item['properties']['hs_analytics_source'];
-        //email = item['properties']['email'];
-        matrix.push([id, lastName, firstName, company, email, phone, hs_analytics_source, isPartner, partner_reffered_by]);
+        id = item['engagement']['id'];
+        createdAt = (item['engagement']['createdAt']/1000+ 32400) / 86400 + 25569; //unixtimeをスプレ用に変換
+        lastUpdated = (item['engagement']['lastUpdated']/1000+ 32400) / 86400 + 25569;
+        contactIds = item['associations']['contactIds'];
+        companyIds = item['associations']['companyIds'];
+        dealIds = item['associations']['dealIds'];
+        ownerIds = item['associations']['ownerIds'];
+        matrix.push([id,createdAt,lastUpdated,contactIds,companyIds,dealIds,ownerIds]);
       })
-      counter++
-
-      // Debug
-      // throw new Error('デバッグ用エラーが発生！');
-    }
+   }
   } catch(error) {
     Logger.log("Error: %s", error);
 
@@ -76,7 +57,7 @@ function writeEngagements(){
   let ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheetName = 'engagements';
   let sheet = ss.getSheetByName(sheetName);
-  let data = getContacts();
+  let data = getEngagements();
   let lastRowNum = data.length;
   let lastColNum = data[0].length;
   sheet.clear();
