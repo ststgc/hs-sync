@@ -4,8 +4,8 @@ function onOpen() {
   menu.addItem('Write Contacts', 'writeContacts');
   menu.addItem('Write Companies', 'writeCompanies');
   menu.addItem('Write Deals', 'writeDeals');
+  menu.addItem('Write Engagements', 'writeEngagements');
+  menu.addSeparator();
   menu.addItem('Write Pipelines', 'writePipelines');
-  // menu.addSeparator();
-  // menu.addItem('Write Pipelines', 'writePipelines');
   menu.addToUi();
 }

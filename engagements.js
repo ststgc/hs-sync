@@ -2,8 +2,8 @@
 // Get All Engagements
 function getEngagements(){
   let matrix = [];
-  let id, contactIds,companyIds,dealIds,ownerIds,createdAt,lastUpdated;
-  let labels  = ['id','createdAt','lastUpdated','contactIds','companyIds','dealIds','ownerIds'];
+  let id, contactIds,companyIds,dealIds,ownerIds,createdAt,lastUpdated, type;
+  let labels  = ['id','createdAt','lastUpdated','contactIds','companyIds','dealIds','ownerIds', 'type'];
   matrix.push(labels);  
   let go = true;
   let counter = 1;
@@ -37,7 +37,8 @@ function getEngagements(){
         companyIds = item['associations']['companyIds'];
         dealIds = item['associations']['dealIds'];
         ownerIds = item['associations']['ownerIds'];
-        matrix.push([id,createdAt,lastUpdated,contactIds,companyIds,dealIds,ownerIds]);
+        type = = item['engagement']['type'];
+        matrix.push([id,createdAt,lastUpdated,contactIds,companyIds,dealIds,ownerIds,type]);
       })
    }
   } catch(error) {
